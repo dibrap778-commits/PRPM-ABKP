@@ -3,13 +3,14 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
-import { BookOpen, LayoutDashboard, FileText, LogOut, Menu, X, ChevronRight, CalendarDays } from 'lucide-react'
+import { BookOpen, LayoutDashboard, FileText, LogOut, Menu, X, ChevronRight, CalendarDays, Bell } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 
 const NAV = [
   { href: '/admin', label: 'Dashboard', icon: LayoutDashboard, exact: true },
   { href: '/admin/surat', label: 'Permohonan Surat', icon: FileText, exact: false },
   { href: '/admin/kegiatan', label: 'Kelola Kegiatan', icon: CalendarDays, exact: false },
+  { href: '/admin/pengumuman', label: 'Pengumuman', icon: Bell, exact: false },
 ]
 
 export default function AdminSidebar({ userEmail }: { userEmail: string }) {
