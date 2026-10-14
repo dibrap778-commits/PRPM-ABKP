@@ -5,7 +5,6 @@ import Link from 'next/link'
 import { Calendar, MapPin, Search, Users } from 'lucide-react'
 import { CATEGORY_LABELS, STATUS_LABELS } from '@/lib/data'
 import { CategoryBadge, StatusBadge } from '@/components/ui/Badge'
-import { CategoryBanner } from '@/components/ui/CategoryBanner'
 import type { Activity, ActivityCategory, ActivityStatus } from '@/types'
 
 function formatDate(dateStr: string, endDate?: string) {
@@ -94,11 +93,6 @@ export default function KegiatanClient({ activities }: { activities: Activity[] 
           {filtered.map(activity => (
             <Link key={activity.id} href={`/kegiatan/${activity.slug}`} className="group">
               <article className="bg-white rounded-2xl border border-slate-200 overflow-hidden h-full flex flex-col hover:border-[#0C3461]/30 hover:shadow-md transition-all">
-                <CategoryBanner
-                  category={activity.category}
-                  imageUrl={activity.image}
-                  className="h-36"
-                />
                 <div className="p-5 flex flex-col flex-1">
                   <div className="flex items-start justify-between gap-2 mb-3">
                     <CategoryBadge category={activity.category} label={CATEGORY_LABELS[activity.category]} />
