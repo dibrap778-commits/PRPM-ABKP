@@ -33,7 +33,7 @@ export default function Header() {
             <div className="leading-tight">
               <div className="font-jakarta text-white font-bold text-sm tracking-wide">PRPM</div>
               <div className="text-white/50 text-[10px] font-medium tracking-wider uppercase hidden sm:block">
-                Pusat Riset &amp; Pengabdian Masyarakat
+                PRPM Primaniyarta
               </div>
             </div>
           </Link>
