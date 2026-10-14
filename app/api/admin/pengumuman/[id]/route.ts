@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createClient } from '@/lib/supabase/server'
-import type { AnnouncementInsert } from '@/lib/supabase/types'
+import { createClient, createAdminClient } from '@/lib/supabase/server'
 
 export async function PATCH(
   req: NextRequest,
@@ -13,23 +12,17 @@ export async function PATCH(
   const { id } = await params
   try {
     const body = await req.json()
+    const admin = await createAdminClient()
 
     if (body.isActive) {
-      await supabase
-        .from('announcements')
-        .update({ is_active: false } as AnnouncementInsert)
-        .neq('id', id)
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      await (admin as any).from('announcements').update({ is_active: false }).neq('id', id)
     }
 
-    const payload: AnnouncementInsert = {
-      title: body.title ?? '',
-      content: body.content,
-      is_active: body.isActive ?? false,
-    }
-
-    const { error } = await supabase
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const { error } = await (admin as any)
       .from('announcements')
-      .update(payload)
+      .update({ title: body.title ?? '', content: body.content, is_active: body.isActive ?? false })
       .eq('id', id)
 
     if (error) throw error
@@ -49,7 +42,9 @@ export async function DELETE(
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
   const { id } = await params
-  const { error } = await supabase.from('announcements').delete().eq('id', id)
+  const admin = await createAdminClient()
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const { error } = await (admin as any).from('announcements').delete().eq('id', id)
   if (error) return NextResponse.json({ error: 'Gagal menghapus.' }, { status: 500 })
   return NextResponse.json({ success: true })
 }
