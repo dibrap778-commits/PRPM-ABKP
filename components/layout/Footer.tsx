@@ -1,5 +1,6 @@
 import Link from 'next/link'
-import { MapPin, Phone, Mail, BookOpen } from 'lucide-react'
+import Image from 'next/image'
+import { MapPin, Phone, Mail } from 'lucide-react'
 
 export default function Footer() {
   return (
@@ -10,9 +11,13 @@ export default function Footer() {
           {/* Brand */}
           <div className="lg:col-span-2">
             <div className="flex items-center gap-2.5 mb-4">
-              <div className="w-8 h-8 rounded-lg bg-[#B8720A] flex items-center justify-center flex-shrink-0">
-                <BookOpen className="w-4 h-4 text-white" strokeWidth={2.5} />
-              </div>
+              <Image
+                src="/logo-prpm.png"
+                alt="Logo PRPM"
+                width={40}
+                height={40}
+                className="rounded-full flex-shrink-0"
+              />
               <div>
                 <div className="font-jakarta text-white font-bold text-sm">PRPM</div>
                 <div className="text-white/40 text-[10px] uppercase tracking-wider">ABK Primaniyarta</div>
