@@ -21,6 +21,11 @@ export const metadata: Metadata = {
     template: '%s | PRPM ABK Primaniyarta',
   },
   description: 'Portal resmi PRPM Akademi Bisnis dan Keuangan Primaniyarta — informasi kegiatan penelitian dan pengabdian masyarakat, serta layanan permohonan surat resmi.',
+  icons: {
+    icon: '/logo-abkp.png',
+    shortcut: '/logo-abkp.png',
+    apple: '/logo-abkp.png',
+  },
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
