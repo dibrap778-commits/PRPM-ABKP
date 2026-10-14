@@ -16,6 +16,7 @@ export type ActivityRow = {
   speaker: string | null
   max_participants: number | null
   registration_url: string | null
+  image_url: string | null
   tags: string[]
   created_at: string
 }
@@ -73,7 +74,7 @@ export interface Database {
       announcements: {
         Row: AnnouncementRow
         Insert: AnnouncementInsert
-        Update: Partial<AnnouncementInsert>
+        Update: Partial<AnnouncementRow>
       }
       letter_requests: {
         Row: LetterRequestRow
