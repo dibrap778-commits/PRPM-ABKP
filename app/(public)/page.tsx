@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { ArrowRight, FileText, Users, Award, ChevronRight, Bell, MapPin } from 'lucide-react'
+import { ArrowRight, FileText, ChevronRight, Bell } from 'lucide-react'
 import { CATEGORY_LABELS, STATUS_LABELS } from '@/lib/data'
 import { getActivities, getActiveAnnouncement } from '@/lib/supabase/queries'
 
@@ -83,29 +83,6 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* Stats strip */}
-      <div className="bg-[#081F3D]">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 py-5">
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-0 sm:divide-x sm:divide-white/10">
-            {[
-              { icon: Users, value: '24', label: 'Dosen Aktif Meneliti' },
-              { icon: FileText, value: '70+', label: 'Surat Diterbitkan 2025' },
-              { icon: Award, value: '6', label: 'Hibah Kompetitif Aktif' },
-              { icon: MapPin, value: '2', label: 'Desa Binaan' },
-            ].map(({ icon: Icon, value, label }) => (
-              <div key={label} className="flex items-center gap-3 sm:px-6 first:pl-0">
-                <div className="w-9 h-9 rounded-lg bg-white/8 flex items-center justify-center flex-shrink-0">
-                  <Icon className="w-4 h-4 text-[#E8A030]" />
-                </div>
-                <div>
-                  <div className="font-jakarta text-white font-bold text-lg leading-none">{value}</div>
-                  <div className="text-white/45 text-xs mt-0.5">{label}</div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
 
       {/* Upcoming Activities */}
       <section className="py-14 sm:py-16 bg-slate-50">
