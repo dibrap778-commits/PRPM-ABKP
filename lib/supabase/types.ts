@@ -56,7 +56,7 @@ export type LetterRequestRow = {
 
 // ── Insert types ───────────────────────────────────────────
 
-export type ActivityInsert = Omit<ActivityRow, 'id' | 'created_at'>
+export type ActivityInsert = Omit<ActivityRow, 'id' | 'created_at' | 'image_url'> & { image_url?: string | null }
 export type AnnouncementInsert = Omit<AnnouncementRow, 'id' | 'created_at'>
 export type LetterRequestInsert = Omit<LetterRequestRow, 'id' | 'submitted_at' | 'updated_at' | 'status' | 'pdf_url'>
 export type LetterRequestUpdate = Partial<Pick<LetterRequestRow, 'status' | 'pdf_url' | 'updated_at'>>

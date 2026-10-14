@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
+import type { AnnouncementInsert } from '@/lib/supabase/types'
 
 export async function PATCH(
   req: NextRequest,
@@ -13,18 +14,22 @@ export async function PATCH(
   try {
     const body = await req.json()
 
-    // Kalau diaktifkan, nonaktifkan yang lain dulu
     if (body.isActive) {
-      await supabase.from('announcements').update({ is_active: false }).neq('id', id)
+      await supabase
+        .from('announcements')
+        .update({ is_active: false } as AnnouncementInsert)
+        .neq('id', id)
+    }
+
+    const payload: AnnouncementInsert = {
+      title: body.title ?? '',
+      content: body.content,
+      is_active: body.isActive ?? false,
     }
 
     const { error } = await supabase
       .from('announcements')
-      .update({
-        title: body.title,
-        content: body.content,
-        is_active: body.isActive ?? false,
-      })
+      .update(payload)
       .eq('id', id)
 
     if (error) throw error
