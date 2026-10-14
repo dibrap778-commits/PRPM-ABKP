@@ -3,7 +3,8 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useState } from 'react'
-import { Menu, X, BookOpen } from 'lucide-react'
+import { Menu, X } from 'lucide-react'
+import Image from 'next/image'
 
 const NAV_LINKS = [
   { href: '/', label: 'Beranda' },
@@ -22,9 +23,13 @@ export default function Header() {
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2.5 group">
-            <div className="w-8 h-8 rounded-lg bg-[#B8720A] flex items-center justify-center flex-shrink-0">
-              <BookOpen className="w-4 h-4 text-white" strokeWidth={2.5} />
-            </div>
+            <Image
+              src="/logo-prpm.png"
+              alt="Logo PRPM"
+              width={40}
+              height={40}
+              className="rounded-full flex-shrink-0"
+            />
             <div className="leading-tight">
               <div className="font-jakarta text-white font-bold text-sm tracking-wide">PRPM</div>
               <div className="text-white/50 text-[10px] font-medium tracking-wider uppercase hidden sm:block">
