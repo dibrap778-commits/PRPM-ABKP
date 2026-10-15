@@ -2,13 +2,17 @@ import { notFound } from 'next/navigation'
 import { ArrowLeft } from 'lucide-react'
 import Link from 'next/link'
 import KegiatanForm from '@/components/admin/KegiatanForm'
-import { getAdminActivityById } from '@/lib/supabase/admin-queries'
+import ArchiveManager from '@/components/admin/ArchiveManager'
+import { getAdminActivityById, getAdminActivityArchives } from '@/lib/supabase/admin-queries'
 
 export const metadata = { title: 'Edit Kegiatan' }
 
 export default async function EditKegiatanPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
-  const activity = await getAdminActivityById(id)
+  const [activity, archives] = await Promise.all([
+    getAdminActivityById(id),
+    getAdminActivityArchives(id),
+  ])
   if (!activity) notFound()
 
   return (
@@ -20,7 +24,10 @@ export default async function EditKegiatanPage({ params }: { params: Promise<{ i
         <h1 className="font-jakarta font-extrabold text-slate-800 text-2xl">Edit Kegiatan</h1>
         <p className="text-slate-500 text-sm mt-1 line-clamp-1">{activity.title}</p>
       </div>
-      <KegiatanForm existing={activity} />
+      <div className="flex flex-col gap-6">
+        <KegiatanForm existing={activity} />
+        <ArchiveManager activityId={id} initialItems={archives} />
+      </div>
     </div>
   )
 }

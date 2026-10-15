@@ -60,6 +60,18 @@ export async function deleteActivity(id: string): Promise<void> {
   if (error) throw error
 }
 
+export async function getAdminActivityArchives(activityId: string): Promise<{ id: string; type: 'photo' | 'document'; title: string; url: string }[]> {
+  const supabase = await createAdminClient()
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const { data, error } = await (supabase as any)
+    .from('activity_archives')
+    .select('id, type, title, url')
+    .eq('activity_id', activityId)
+    .order('created_at', { ascending: true })
+  if (error || !data) return []
+  return data
+}
+
 export async function getLetterRequests(status?: string): Promise<LetterRequestRow[]> {
   const supabase = await createAdminClient()
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
