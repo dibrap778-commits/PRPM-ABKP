@@ -21,6 +21,15 @@ export type ActivityRow = {
   created_at: string
 }
 
+export type ArchiveRow = {
+  id: string
+  activity_id: string
+  type: 'photo' | 'document'
+  title: string
+  url: string
+  created_at: string
+}
+
 export type AnnouncementRow = {
   id: string
   title: string
@@ -70,6 +79,11 @@ export interface Database {
         Row: ActivityRow
         Insert: ActivityInsert
         Update: Partial<ActivityInsert>
+      }
+      activity_archives: {
+        Row: ArchiveRow
+        Insert: Omit<ArchiveRow, 'id' | 'created_at'>
+        Update: Partial<Omit<ArchiveRow, 'id' | 'created_at'>>
       }
       announcements: {
         Row: AnnouncementRow

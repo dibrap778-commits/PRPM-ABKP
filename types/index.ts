@@ -49,6 +49,15 @@ export interface LetterRequest {
   uploadedFile?: string
 }
 
+export interface ArchiveItem {
+  id: string
+  activityId: string
+  type: 'photo' | 'document'
+  title: string
+  url: string
+  createdAt: string
+}
+
 export interface Announcement {
   id: string
   title: string

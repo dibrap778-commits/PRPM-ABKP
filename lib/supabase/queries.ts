@@ -1,6 +1,6 @@
 import { createClient } from './server'
 import { ACTIVITIES, ANNOUNCEMENTS } from '@/lib/data'
-import type { Activity, Announcement } from '@/types'
+import type { Activity, Announcement, ArchiveItem } from '@/types'
 
 function isSupabaseConfigured() {
   return !!(
@@ -26,6 +26,7 @@ function mapActivity(row: Record<string, unknown>): Activity {
     speaker: (row.speaker as string) ?? undefined,
     maxParticipants: (row.max_participants as number) ?? undefined,
     registrationUrl: (row.registration_url as string) ?? undefined,
+    image: (row.image_url as string) ?? undefined,
     tags: (row.tags as string[]) ?? [],
   }
 }
@@ -71,6 +72,29 @@ export async function getActivityBySlug(slug: string): Promise<Activity | undefi
 
   if (error || !data) return undefined
   return mapActivity(data)
+}
+
+export async function getActivityArchives(activityId: string): Promise<ArchiveItem[]> {
+  if (!isSupabaseConfigured()) return []
+
+  const supabase = await createClient()
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const { data, error } = await (supabase as any)
+    .from('activity_archives')
+    .select('*')
+    .eq('activity_id', activityId)
+    .order('created_at', { ascending: true })
+
+  if (error || !data) return []
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  return (data as any[]).map(row => ({
+    id: row.id as string,
+    activityId: row.activity_id as string,
+    type: row.type as 'photo' | 'document',
+    title: row.title as string,
+    url: row.url as string,
+    createdAt: row.created_at as string,
+  }))
 }
 
 export async function getActiveAnnouncement(): Promise<Announcement | undefined> {
