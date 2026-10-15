@@ -1,8 +1,9 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import { useRouter } from 'next/navigation'
-import { Save, Loader2 } from 'lucide-react'
+import { Save, Loader2, Upload, X, CheckCircle2 } from 'lucide-react'
+import { createClient } from '@/lib/supabase/client'
 import type { ActivityRow } from '@/lib/supabase/admin-queries'
 
 type FormData = {
@@ -18,13 +19,14 @@ type FormData = {
   maxParticipants: string
   registrationUrl: string
   tags: string
+  imageUrl: string
 }
 
 const INITIAL: FormData = {
   title: '', category: 'penelitian', status: 'mendatang',
   date: '', endDate: '', location: '', description: '',
   fullDescription: '', speaker: '', maxParticipants: '',
-  registrationUrl: '', tags: '',
+  registrationUrl: '', tags: '', imageUrl: '',
 }
 
 function activityToForm(a: ActivityRow): FormData {
@@ -41,6 +43,7 @@ function activityToForm(a: ActivityRow): FormData {
     maxParticipants: a.max_participants?.toString() ?? '',
     registrationUrl: a.registration_url ?? '',
     tags: a.tags?.join(', ') ?? '',
+    imageUrl: a.image_url ?? '',
   }
 }
 
@@ -62,9 +65,28 @@ export default function KegiatanForm({ existing }: { existing?: ActivityRow }) {
   const [form, setForm] = useState<FormData>(existing ? activityToForm(existing) : INITIAL)
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
+  const [imgUploading, setImgUploading] = useState(false)
+  const imgInputRef = useRef<HTMLInputElement>(null)
 
   function set(field: keyof FormData, value: string) {
     setForm(prev => ({ ...prev, [field]: value }))
+  }
+
+  async function handleImageUpload(file: File) {
+    setImgUploading(true)
+    try {
+      const supabase = createClient()
+      const ext = file.name.split('.').pop() ?? 'jpg'
+      const path = `kegiatan/${Date.now()}.${ext}`
+      const { error: upErr } = await supabase.storage
+        .from('activities')
+        .upload(path, file, { upsert: true, contentType: file.type })
+      if (upErr) { setError('Gagal upload foto: ' + upErr.message); return }
+      const url = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/activities/${path}`
+      set('imageUrl', url)
+    } finally {
+      setImgUploading(false)
+    }
   }
 
   async function handleSubmit(e: React.FormEvent) {
@@ -83,7 +105,7 @@ export default function KegiatanForm({ existing }: { existing?: ActivityRow }) {
       const res = await fetch(url, {
         method,
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(form),
+        body: JSON.stringify({ ...form, imageUrl: form.imageUrl || null }),
       })
       if (!res.ok) {
         const data = await res.json()
@@ -190,6 +212,49 @@ export default function KegiatanForm({ existing }: { existing?: ActivityRow }) {
             placeholder="pisahkan dengan koma: metodologi, kuantitatif, SPSS"
             className={inputCls} />
         </Field>
+      </div>
+
+      {/* Foto Kegiatan */}
+      <div className="bg-white rounded-2xl border border-slate-200 p-5 flex flex-col gap-4">
+        <h2 className="font-jakarta font-bold text-slate-700 text-sm border-b border-slate-100 pb-3">
+          Foto Kegiatan <span className="text-slate-400 font-normal">(opsional)</span>
+        </h2>
+        <input
+          ref={imgInputRef}
+          type="file"
+          accept="image/jpeg,image/png,image/webp"
+          className="hidden"
+          onChange={e => { const f = e.target.files?.[0]; if (f) handleImageUpload(f) }}
+        />
+        {form.imageUrl ? (
+          <div className="relative">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={form.imageUrl} alt="Preview" className="w-full h-40 object-cover rounded-xl" />
+            <button
+              type="button"
+              onClick={() => set('imageUrl', '')}
+              className="absolute top-2 right-2 bg-white/90 hover:bg-white rounded-full p-1 shadow transition-colors"
+            >
+              <X className="w-4 h-4 text-slate-600" />
+            </button>
+            <div className="flex items-center gap-1.5 mt-2 text-xs text-emerald-600">
+              <CheckCircle2 className="w-3.5 h-3.5" /> Foto berhasil diupload
+            </div>
+          </div>
+        ) : (
+          <button
+            type="button"
+            onClick={() => imgInputRef.current?.click()}
+            disabled={imgUploading}
+            className="flex items-center justify-center gap-2 w-full py-10 border-2 border-dashed border-slate-200 rounded-xl text-sm text-slate-500 hover:border-[#0C3461]/40 hover:text-[#0C3461] hover:bg-slate-50 transition-colors disabled:opacity-50"
+          >
+            {imgUploading
+              ? <><Loader2 className="w-4 h-4 animate-spin" /> Mengupload...</>
+              : <><Upload className="w-4 h-4" /> Klik untuk upload foto (JPG/PNG/WebP)</>
+            }
+          </button>
+        )}
+        <p className="text-xs text-slate-400">Jika tidak diisi, banner kategori otomatis ditampilkan.</p>
       </div>
 
       {error && (

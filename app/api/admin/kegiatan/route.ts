@@ -48,6 +48,7 @@ export async function POST(req: NextRequest) {
       speaker: body.speaker || null,
       max_participants: body.maxParticipants ? Number(body.maxParticipants) : null,
       registration_url: body.registrationUrl || null,
+      image_url: body.imageUrl || null,
       tags: body.tags ? body.tags.split(',').map((t: string) => t.trim()).filter(Boolean) : [],
     }
 

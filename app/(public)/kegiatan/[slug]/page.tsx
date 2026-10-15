@@ -58,6 +58,18 @@ export default async function ActivityDetailPage({ params }: { params: Promise<{
         Kembali ke Kegiatan
       </Link>
 
+      {/* Banner foto (opsional) */}
+      {activity.image && (
+        <div className="mb-8 rounded-2xl overflow-hidden border border-slate-200 max-h-72">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={activity.image}
+            alt={activity.title}
+            className="w-full h-72 object-cover"
+          />
+        </div>
+      )}
+
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Main content */}
         <div className="lg:col-span-2">
