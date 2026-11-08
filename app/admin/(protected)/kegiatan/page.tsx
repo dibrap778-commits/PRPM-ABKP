@@ -2,6 +2,7 @@ import Link from 'next/link'
 import { getAdminActivities } from '@/lib/supabase/admin-queries'
 import { Plus, Pencil, CalendarDays } from 'lucide-react'
 import DeleteKegiatanButton from '@/components/admin/DeleteKegiatanButton'
+import ArsipkanButton from '@/components/admin/ArsipkanButton'
 
 export const dynamic = 'force-dynamic'
 
@@ -73,6 +74,7 @@ export default async function AdminKegiatanPage() {
                         <Link href={`/admin/kegiatan/${a.id}`} className="text-slate-400 hover:text-[#0C3461] transition-colors" title="Edit">
                           <Pencil className="w-4 h-4" />
                         </Link>
+                        {a.status !== 'selesai' && <ArsipkanButton id={a.id} title={a.title} />}
                         <DeleteKegiatanButton id={a.id} title={a.title} />
                       </div>
                     </td>
